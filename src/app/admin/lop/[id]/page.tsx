@@ -20,6 +20,11 @@ import {
   setCriterionJudge,
   updateRace,
 } from "@/server/actions/races";
+import {
+  lockQualifying,
+  publishLeaderboard,
+  unlockQualifying,
+} from "@/server/actions/qualifying";
 import { registerDriver, unregisterDriver } from "@/server/actions/registrations";
 import { ActionForm } from "../../_components/action-form";
 import { DeleteForm } from "../../_components/delete-form";
@@ -85,9 +90,33 @@ export default async function RaceDetailPage({ params }: { params: { id: string 
       <h1>{race.name}</h1>
       <p className="muted">
         {nb.raceStatus[race.status]} ·{" "}
+        <Link href={`/lop/${race.id}/kvalifisering`}>Scoring</Link> ·{" "}
         <Link href={`/lop/${race.id}/resultater`}>{nb.leaderboard.title}</Link> ·{" "}
         <Link href={`/lop/${race.id}/cup`}>Cup</Link>
       </p>
+
+      {/* Qualifying controls */}
+      <div className="panel" style={{ marginBottom: "1.5rem" }}>
+        <h3>{nb.raceStatus.qualifying}</h3>
+        <p className="muted">
+          Status: {race.qualifyingLocked ? "låst" : "åpen"} · Tavle:{" "}
+          {nb.leaderboard[race.leaderboardStatus === "official" ? "official" : race.leaderboardStatus === "unofficial" ? "unofficial" : "inProgress"]}
+        </p>
+        <div className="row-actions">
+          {race.qualifyingLocked ? (
+            <ActionForm action={unlockQualifying} submitLabel={nb.actions.unlock} className="inline-form">
+              <input type="hidden" name="raceId" value={race.id} />
+            </ActionForm>
+          ) : (
+            <ActionForm action={lockQualifying} submitLabel={nb.actions.lock} className="inline-form">
+              <input type="hidden" name="raceId" value={race.id} />
+            </ActionForm>
+          )}
+          <ActionForm action={publishLeaderboard} submitLabel={nb.actions.publish} className="inline-form">
+            <input type="hidden" name="raceId" value={race.id} />
+          </ActionForm>
+        </div>
+      </div>
 
       {/* Edit race */}
       <div className="panel" style={{ marginBottom: "1.5rem" }}>
