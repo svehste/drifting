@@ -31,7 +31,23 @@ no queues. Public views scale via short-cached endpoints + polling. See
 MVP covers everything in the acceptance criteria **except** email notifications
 and password reset (both explicitly deferred). The driver page is read-only.
 
+## Running it
+
+See [DEPLOY.md](DEPLOY.md) for setup, environment variables, and deploy steps.
+
+```bash
+nvm use && npm install
+npm run db:migrate && npm run db:seed
+npm run dev            # http://localhost:3000
+npm test               # unit + PGlite integration tests
+```
+
 ## Status
 
-Planning complete (docs 1–4). Implementation starts at **M0** in
-[build_plan.md](build_plan.md).
+Planning complete (docs 1–4). MVP implemented across milestones **M0–M8**
+([build_plan.md](build_plan.md)): pure domain logic (seeding/ranking/tie-break/
+bracket/placements), Drizzle schema, Supabase auth + role permissions, admin
+CRUD with audit logging, judge scoring, public leaderboard, cup/bracket with
+OMT and byes, and the read-only driver page. Domain logic and DB wiring
+(recompute, cup engine, schema constraints) are covered by unit + PGlite
+integration tests. Not in MVP: email notifications and password reset.
