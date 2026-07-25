@@ -5,7 +5,7 @@
  */
 export const nb = {
   appName: "Driftingarrangement",
-  tagline: "Kvalifisering, cup og live resultattavle",
+  tagline: "Kvalifisering, finaler og live resultattavle",
 
   nav: {
     events: "Arrangementer",
@@ -16,6 +16,7 @@ export const nb = {
     auditLog: "Logg",
     signOut: "Logg ut",
     signIn: "Logg inn",
+    home: "Forsiden",
   },
 
   roles: {
@@ -28,7 +29,7 @@ export const nb = {
   raceStatus: {
     registration: "Påmelding",
     qualifying: "Kvalifisering",
-    cup: "Cup",
+    cup: "Finaler",
     finished: "Ferdig",
   },
 
@@ -56,7 +57,7 @@ export const nb = {
   },
 
   leaderboard: {
-    title: "Resultatliste",
+    title: "Kvalifiseringsresultater",
     rank: "Plass",
     startNumber: "Startnr.",
     name: "Navn",
@@ -109,7 +110,7 @@ export const nb = {
     upcoming: "Kommende løp",
     history: "Tidligere løp",
     qualifyingResult: "Kvalifisering",
-    cupResult: "Cup",
+    cupResult: "Finaler",
     phone: "Telefon",
     email: "E-post",
     dummyTag: "dummynr.",

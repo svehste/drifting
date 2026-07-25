@@ -92,7 +92,7 @@ export default async function RaceDetailPage({ params }: { params: { id: string 
         {nb.raceStatus[race.status]} ·{" "}
         <Link href={`/lop/${race.id}/kvalifisering`}>Scoring</Link> ·{" "}
         <Link href={`/lop/${race.id}/resultater`}>{nb.leaderboard.title}</Link> ·{" "}
-        <Link href={`/admin/lop/${race.id}/cup`}>Cup-admin</Link>
+        <Link href={`/admin/lop/${race.id}/cup`}>Finaler-admin</Link>
       </p>
 
       {/* Qualifying controls */}
@@ -140,7 +140,7 @@ export default async function RaceDetailPage({ params }: { params: { id: string 
               </select>
             </label>
             <label className="field">
-              <span>Cup-størrelse</span>
+              <span>Finaler-størrelse</span>
               <select name="cupSize" defaultValue={race.cupSize}>
                 {["4", "8", "16", "32"].map((s) => (
                   <option key={s} value={s}>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { nb } from "@/copy/nb";
 import type { BracketBattle, BracketData, BracketDriver } from "@/server/queries/bracket";
@@ -61,15 +62,21 @@ export function BracketView({ initial }: { initial: BracketData }) {
   if (!data.exists) {
     return (
       <>
+        <p className="muted">
+          <Link href="/">← {nb.nav.home}</Link>
+        </p>
         <h1>{data.raceName}</h1>
-        <p className="muted">Cupen er ikke generert ennå.</p>
+        <p className="muted">Finalene er ikke generert ennå.</p>
       </>
     );
   }
 
   return (
     <>
-      <h1>{data.raceName} — Cup</h1>
+      <p className="muted">
+        <Link href="/">← {nb.nav.home}</Link>
+      </p>
+      <h1>{data.raceName} — Finaler</h1>
 
       {data.finished && data.podium.length > 0 ? (
         <div className="panel podium">

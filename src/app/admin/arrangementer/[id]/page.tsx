@@ -91,7 +91,7 @@ export default async function EventDetailPage({ params }: { params: { id: string
                 </select>
               </label>
               <label className="field">
-                <span>Cup-størrelse</span>
+                <span>Finaler-størrelse</span>
                 <select name="cupSize" defaultValue="16">
                   <option value="4">4</option>
                   <option value="8">8</option>
@@ -109,7 +109,7 @@ export default async function EventDetailPage({ params }: { params: { id: string
           <tr>
             <th>Løp</th>
             <th>Klasse</th>
-            <th>Cup</th>
+            <th>Finaler</th>
             <th>Status</th>
             <th />
           </tr>

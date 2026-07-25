@@ -69,7 +69,7 @@ export default async function HomePage() {
                             <Link href={`/lop/${r.id}/resultater`}>{nb.leaderboard.title}</Link>
                           </td>
                           <td>
-                            <Link href={`/lop/${r.id}/cup`}>Cup</Link>
+                            <Link href={`/lop/${r.id}/cup`}>Finaler</Link>
                           </td>
                         </tr>
                       ))}

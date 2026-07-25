@@ -32,7 +32,7 @@ export async function generateBracket(
     if (!race.qualifyingLocked) return fail("Lås kvalifiseringen før du genererer stigen.");
 
     const existing = await db.select({ id: cups.id }).from(cups).where(eq(cups.raceId, raceId)).limit(1);
-    if (existing.length > 0) return fail("Cup finnes allerede — bruk regenerering.");
+    if (existing.length > 0) return fail("Finaler finnes allerede — bruk regenerering.");
 
     const eligible = await db
       .select({ id: registrations.id })
@@ -69,7 +69,7 @@ export async function regenerateBracket(
     const raceId = z.string().uuid().parse(formData.get("raceId"));
 
     const [cup] = await db.select().from(cups).where(eq(cups.raceId, raceId)).limit(1);
-    if (!cup) return fail("Ingen cup å regenerere.");
+    if (!cup) return fail("Ingen finaler å regenerere.");
 
     await db.transaction(async (tx) => {
       await tx.delete(battles).where(eq(battles.cupId, cup.id));

@@ -566,7 +566,8 @@ details > form {
 
 .podium-list {
   margin: 0.5rem 0 0;
-  padding-left: 1.2rem;
+  padding-left: 0;
+  list-style: none;
 }
 
 .podium-place {

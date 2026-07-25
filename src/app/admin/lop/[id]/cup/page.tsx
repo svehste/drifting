@@ -25,9 +25,9 @@ export default async function AdminCupPage({ params }: { params: { id: string } 
       <p className="muted">
         <Link href={`/admin/lop/${race.id}`}>← {race.name}</Link>
       </p>
-      <h1>Cup — {race.name}</h1>
+      <h1>Finaler — {race.name}</h1>
       <p className="muted">
-        <Link href={`/lop/${race.id}/cup`}>Offentlig cup-visning</Link>
+        <Link href={`/lop/${race.id}/cup`}>Offentlig finaler-visning</Link>
       </p>
 
       {!data.exists ? (

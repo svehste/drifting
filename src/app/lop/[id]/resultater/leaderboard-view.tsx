@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { nb } from "@/copy/nb";
 import type { LeaderboardData, RunCell } from "@/server/queries/leaderboard";
@@ -53,6 +54,9 @@ export function LeaderboardView({ initial }: { initial: LeaderboardData }) {
 
   return (
     <>
+      <p className="muted">
+        <Link href="/">← {nb.nav.home}</Link>
+      </p>
       <div className="leaderboard-head">
         <h1>{data.raceName}</h1>
         <StatusBadge data={data} />
