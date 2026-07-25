@@ -104,6 +104,9 @@ export const nb = {
     cupResult: "Cup",
     phone: "Telefon",
     email: "E-post",
+    dummyTag: "dummynr.",
+    noUpcoming: "Ingen kommende løp.",
+    noHistory: "Ingen tidligere løp.",
   },
 } as const;
 
