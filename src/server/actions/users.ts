@@ -96,8 +96,12 @@ async function provisionPassword(
   try {
     return (await provisionStaffAuth({ email: data.email, password: data.password, authUserId }))
       ?? authUserId;
-  } catch {
-    throw new AuthzError(nb.usersForm.passwordError);
+  } catch (err) {
+    // Surface the underlying Supabase reason: it lands in the Vercel function
+    // logs and in the form error so the cause is diagnosable.
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("password provisioning failed:", detail);
+    throw new AuthzError(`${nb.usersForm.passwordError} (${detail})`);
   }
 }
 

@@ -54,10 +54,9 @@ export async function provisionStaffAuth(params: {
   const { email, password } = params;
 
   if (params.authUserId) {
-    const { error } = await admin.auth.admin.updateUserById(params.authUserId, {
-      email,
-      password,
-    });
+    // Only touch the password here — updating the email in the same call can be
+    // rejected by Supabase (e.g. when it's unchanged or needs re-confirmation).
+    const { error } = await admin.auth.admin.updateUserById(params.authUserId, { password });
     if (error) throw new Error(error.message);
     return params.authUserId;
   }
