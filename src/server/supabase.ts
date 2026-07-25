@@ -16,13 +16,19 @@ function env(name: string): string {
   return value;
 }
 
+/** Accept either the classic anon key or the newer publishable key env name. */
+export function supabaseAnonKey(): string {
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!key) throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY (or _PUBLISHABLE_KEY) is not set.");
+  return key;
+}
+
 /** Server client bound to the current request's cookies. */
 export function createSupabaseServerClient() {
   const cookieStore = cookies();
-  return createServerClient(
-    env("NEXT_PUBLIC_SUPABASE_URL"),
-    env("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-    {
+  return createServerClient(env("NEXT_PUBLIC_SUPABASE_URL"), supabaseAnonKey(), {
       cookies: {
         getAll() {
           return cookieStore.getAll();

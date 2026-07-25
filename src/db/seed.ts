@@ -12,30 +12,37 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { classes, userRoles, users } from "./schema";
 
-const url = process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL is not set.");
+async function main() {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is not set.");
 
-const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
+  const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
 
-const sql = postgres(url, { max: 1 });
-const db = drizzle(sql, { schema: { classes, userRoles, users } });
+  const sql = postgres(url, { max: 1, prepare: false });
+  const db = drizzle(sql, { schema: { classes, userRoles, users } });
 
-const defaultClasses = [
-  { name: "Pro", sortOrder: 1 },
-  { name: "Semi-Pro", sortOrder: 2 },
-];
+  const defaultClasses = [
+    { name: "Pro", sortOrder: 1 },
+    { name: "Semi-Pro", sortOrder: 2 },
+  ];
 
-await db.insert(classes).values(defaultClasses).onConflictDoNothing({ target: classes.name });
+  await db.insert(classes).values(defaultClasses).onConflictDoNothing({ target: classes.name });
 
-await db
-  .insert(users)
-  .values({ firstName: "Arrangement", lastName: "Admin", email: ADMIN_EMAIL, status: "active" })
-  .onConflictDoNothing({ target: users.email });
+  await db
+    .insert(users)
+    .values({ firstName: "Arrangement", lastName: "Admin", email: ADMIN_EMAIL, status: "active" })
+    .onConflictDoNothing({ target: users.email });
 
-const [admin] = await db.select({ id: users.id }).from(users).where(eq(users.email, ADMIN_EMAIL));
-if (admin) {
-  await db.insert(userRoles).values({ userId: admin.id, role: "admin" }).onConflictDoNothing();
+  const [admin] = await db.select({ id: users.id }).from(users).where(eq(users.email, ADMIN_EMAIL));
+  if (admin) {
+    await db.insert(userRoles).values({ userId: admin.id, role: "admin" }).onConflictDoNothing();
+  }
+
+  await sql.end();
+  console.log(`✓ Seeded ${defaultClasses.length} classes and admin <${ADMIN_EMAIL}>.`);
 }
 
-await sql.end();
-console.log(`✓ Seeded ${defaultClasses.length} classes and admin <${ADMIN_EMAIL}>.`);
+main().catch((err) => {
+  console.error("✗ db:seed failed:", err instanceof Error ? err.message : err);
+  process.exit(1);
+});
