@@ -38,43 +38,50 @@ export default async function RaceDetailPage({ params }: { params: { id: string 
   const [race] = await db.select().from(races).where(eq(races.id, params.id)).limit(1);
   if (!race) notFound();
 
-  const [[event], classRows, officials, judges, regs, drivers] = await Promise.all([
-    db.select().from(events).where(eq(events.id, race.eventId)).limit(1),
-    db.select().from(classes).orderBy(asc(classes.sortOrder), asc(classes.name)),
-    db
-      .select({
-        id: raceOfficials.id,
-        duty: raceOfficials.duty,
-        userId: raceOfficials.userId,
-        firstName: users.firstName,
-        lastName: users.lastName,
-      })
-      .from(raceOfficials)
-      .innerJoin(users, eq(users.id, raceOfficials.userId))
-      .where(eq(raceOfficials.raceId, race.id)),
-    db
-      .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
-      .from(users)
-      .innerJoin(userRoles, and(eq(userRoles.userId, users.id), eq(userRoles.role, "judge")))
-      .orderBy(asc(users.lastName)),
-    db
-      .select({
-        id: registrations.id,
-        userId: users.id,
-        firstName: users.firstName,
-        lastName: users.lastName,
-        startNumber: users.startNumber,
-      })
-      .from(registrations)
-      .innerJoin(users, eq(users.id, registrations.userId))
-      .where(eq(registrations.raceId, race.id))
-      .orderBy(asc(users.lastName)),
-    db
-      .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
-      .from(users)
-      .innerJoin(userRoles, and(eq(userRoles.userId, users.id), eq(userRoles.role, "driver")))
-      .orderBy(asc(users.lastName)),
-  ]);
+  // Read sequentially, NOT via Promise.all. These run over Supabase's transaction
+  // pooler (pgbouncer); firing them in parallel makes postgres.js pipeline several
+  // onto one connection whenever the pool has fewer free connections than queries,
+  // and a wide pipeline over the pooler stalls until the statement timeout (→ 500).
+  // Sequential reads only ever need one connection at a time, so they stay robust
+  // even when a concurrent write (e.g. registering a driver) is holding one.
+  const [event] = await db.select().from(events).where(eq(events.id, race.eventId)).limit(1);
+  const classRows = await db
+    .select()
+    .from(classes)
+    .orderBy(asc(classes.sortOrder), asc(classes.name));
+  const officials = await db
+    .select({
+      id: raceOfficials.id,
+      duty: raceOfficials.duty,
+      userId: raceOfficials.userId,
+      firstName: users.firstName,
+      lastName: users.lastName,
+    })
+    .from(raceOfficials)
+    .innerJoin(users, eq(users.id, raceOfficials.userId))
+    .where(eq(raceOfficials.raceId, race.id));
+  const judges = await db
+    .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
+    .from(users)
+    .innerJoin(userRoles, and(eq(userRoles.userId, users.id), eq(userRoles.role, "judge")))
+    .orderBy(asc(users.lastName));
+  const regs = await db
+    .select({
+      id: registrations.id,
+      userId: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      startNumber: users.startNumber,
+    })
+    .from(registrations)
+    .innerJoin(users, eq(users.id, registrations.userId))
+    .where(eq(registrations.raceId, race.id))
+    .orderBy(asc(users.lastName));
+  const drivers = await db
+    .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
+    .from(users)
+    .innerJoin(userRoles, and(eq(userRoles.userId, users.id), eq(userRoles.role, "driver")))
+    .orderBy(asc(users.lastName));
 
   const criterionJudge = new Map(officials.filter((o) => o.duty !== "battle").map((o) => [o.duty, o]));
   const battleJudges = officials.filter((o) => o.duty === "battle");
