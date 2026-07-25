@@ -92,7 +92,7 @@ export default async function RaceDetailPage({ params }: { params: { id: string 
         {nb.raceStatus[race.status]} ·{" "}
         <Link href={`/lop/${race.id}/kvalifisering`}>Scoring</Link> ·{" "}
         <Link href={`/lop/${race.id}/resultater`}>{nb.leaderboard.title}</Link> ·{" "}
-        <Link href={`/lop/${race.id}/cup`}>Cup</Link>
+        <Link href={`/admin/lop/${race.id}/cup`}>Cup-admin</Link>
       </p>
 
       {/* Qualifying controls */}

@@ -6,7 +6,6 @@
  * grouped by the round they were eliminated in (later round = better place) and
  * ordered within a round by qualifying position (best rank first).
  */
-import type { BuiltBattle } from "./bracket";
 import type { BattleRound } from "./types";
 
 export interface Placement {
@@ -14,8 +13,16 @@ export interface Placement {
   place: number;
 }
 
+/** The minimal battle shape final placement needs (BuiltBattle and DB rows both fit). */
+export interface ResolvedBattle {
+  round: BattleRound;
+  driverA: string | null;
+  driverB: string | null;
+  winner: string | null;
+}
+
 /** A decided battle between two real drivers; null otherwise (byes have no loser). */
-function realLoser(b: BuiltBattle): string | null {
+function realLoser(b: ResolvedBattle): string | null {
   if (b.driverA && b.driverB && b.winner) {
     return b.winner === b.driverA ? b.driverB : b.driverA;
   }
@@ -27,7 +34,7 @@ function realLoser(b: BuiltBattle): string | null {
  * @param rankOf   driver id → qualifying rank (1 = top qualifier)
  */
 export function finalPlacements(
-  battles: BuiltBattle[],
+  battles: ResolvedBattle[],
   rankOf: (driverId: string) => number,
 ): Placement[] {
   const placements: Placement[] = [];
