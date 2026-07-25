@@ -16,6 +16,18 @@ function env(name: string): string {
   return value;
 }
 
+/**
+ * Whether Supabase Auth is configured. When false we fall back to the dev-login
+ * path (see getCurrentUser), so auth actions must not build a client.
+ */
+export function supabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY),
+  );
+}
+
 /** Accept either the classic anon key or the newer publishable key env name. */
 export function supabaseAnonKey(): string {
   const key =
