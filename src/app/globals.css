@@ -130,3 +130,209 @@ select:focus {
   color: var(--warn);
   font-size: 0.8rem;
 }
+
+/* --- buttons --- */
+.btn-secondary,
+.btn-danger {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-danger {
+  border-color: #7a2d2d;
+  color: #ff8f8f;
+}
+
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.6;
+}
+
+/* --- admin shell --- */
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.admin-nav a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.admin-nav a:hover {
+  color: var(--accent);
+}
+
+.admin-nav .brand {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* --- layout helpers --- */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 620px) {
+  .grid-2,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.card-link {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.card-link h3 {
+  margin: 0 0 0.4rem;
+  color: var(--accent);
+}
+
+/* --- forms --- */
+.form-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.35rem 0;
+}
+
+.inline-form input,
+.inline-form select {
+  width: auto;
+}
+
+.row-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.checkbox-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text);
+}
+
+.checkbox input {
+  width: auto;
+}
+
+details summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+
+details > form {
+  margin-top: 0.75rem;
+}
+
+/* --- tables --- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.table a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* --- chips --- */
+.chip-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem 0.2rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.chip .btn-danger {
+  border: none;
+  padding: 0 0.3rem;
+  font-size: 1rem;
+  line-height: 1;
+}
