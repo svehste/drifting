@@ -58,23 +58,24 @@ export default async function HomePage() {
                 {eventRaces.length === 0 ? (
                   <p className="muted">Ingen løp.</p>
                 ) : (
-                  <table className="table">
-                    <tbody>
-                      {eventRaces.map((r) => (
-                        <tr key={r.id}>
-                          <td>{r.name}</td>
-                          <td className="muted">{r.className}</td>
-                          <td>{nb.raceStatus[r.status]}</td>
-                          <td>
-                            <Link href={`/lop/${r.id}/resultater`}>{nb.leaderboard.title}</Link>
-                          </td>
-                          <td>
-                            <Link href={`/lop/${r.id}/cup`}>Finaler</Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="table-scroll">
+                    <table className="table">
+                      <tbody>
+                        {eventRaces.map((r) => (
+                          <tr key={r.id}>
+                            <td>{r.name}</td>
+                            <td>{nb.raceStatus[r.status]}</td>
+                            <td>
+                              <Link href={`/lop/${r.id}/resultater`}>{nb.leaderboard.title}</Link>
+                            </td>
+                            <td>
+                              <Link href={`/lop/${r.id}/cup`}>Finaler</Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             );

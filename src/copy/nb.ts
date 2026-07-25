@@ -57,7 +57,7 @@ export const nb = {
   },
 
   leaderboard: {
-    title: "Kvalifiseringsresultater",
+    title: "Kvalifisering",
     rank: "Plass",
     startNumber: "Startnr.",
     name: "Navn",
