@@ -6,21 +6,9 @@ import type { Role } from "@/domain/types";
 import { createUser, deleteUser, updateUser } from "@/server/actions/users";
 import { ActionForm } from "../_components/action-form";
 import { DeleteForm } from "../_components/delete-form";
+import { UserRoleFields } from "./user-role-fields";
 
 export const dynamic = "force-dynamic";
-
-function RoleCheckboxes({ selected }: { selected: Set<Role> }) {
-  return (
-    <div className="checkbox-row">
-      {(["admin", "judge", "secretary", "driver"] as Role[]).map((role) => (
-        <label key={role} className="checkbox">
-          <input type="checkbox" name="roles" value={role} defaultChecked={selected.has(role)} />
-          {nb.roles[role]}
-        </label>
-      ))}
-    </div>
-  );
-}
 
 export default async function UsersPage() {
   const [userRows, roleRows] = await Promise.all([
@@ -59,7 +47,7 @@ export default async function UsersPage() {
               <input name="phone" />
             </label>
           </div>
-          <RoleCheckboxes selected={new Set()} />
+          <UserRoleFields />
         </ActionForm>
       </div>
 
@@ -94,7 +82,15 @@ export default async function UsersPage() {
                           <input name="email" type="email" defaultValue={u.email} required />
                           <input name="phone" defaultValue={u.phone ?? ""} />
                         </div>
-                        <RoleCheckboxes selected={roles} />
+                        <UserRoleFields
+                          selected={[...roles]}
+                          driver={{
+                            club: u.club,
+                            car: u.car,
+                            startNumber: u.startNumber,
+                            startNumberIsDummy: u.startNumberIsDummy,
+                          }}
+                        />
                       </ActionForm>
                     </details>
                     <DeleteForm

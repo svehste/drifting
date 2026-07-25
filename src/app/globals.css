@@ -274,6 +274,27 @@ select:focus {
   width: auto;
 }
 
+.role-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 0;
+}
+
+.role-fields legend {
+  padding: 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.field small {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 details summary {
   cursor: pointer;
   color: var(--accent);

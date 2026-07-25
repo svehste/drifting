@@ -96,6 +96,14 @@ export const nb = {
     generic: "Noe gikk galt. Prøv igjen.",
   },
 
+  usersForm: {
+    staffSection: "Innlogging (admin/dommer/sekretær)",
+    password: "Passord",
+    passwordHint: "Minst 8 tegn. La stå tomt for å beholde eksisterende passord.",
+    driverSection: "Førerdetaljer",
+    passwordError: "Kunne ikke lagre passordet. Sjekk e-post og prøv igjen.",
+  },
+
   driverPage: {
     contact: "Kontaktinfo",
     upcoming: "Kommende løp",

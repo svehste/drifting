@@ -24,13 +24,13 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
 
   // Dev-login: with no Supabase configured, getCurrentUser already acts as the
   // seeded admin, so a successful form submit just lands on the admin area.
-  if (!supabaseConfigured()) redirect("/");
+  if (!supabaseConfigured()) redirect("/admin");
 
   const supabase = createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) return { error: "Feil e-post eller passord." };
 
-  redirect("/");
+  redirect("/admin");
 }
 
 /** Sign out and return to the front page (Authentication AC 5). */
