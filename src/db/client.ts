@@ -23,12 +23,17 @@ function init(): Db {
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set — the server cannot reach the database.");
   }
-  const client = globalForDb._pg ?? postgres(connectionString, { prepare: false });
+  // pgbouncer (Supabase pooler): no prepared statements. Cap the per-instance
+  // pool and reap idle connections so warm serverless instances don't exhaust
+  // the pooler's client limit.
+  const client =
+    globalForDb._pg ?? postgres(connectionString, { prepare: false, max: 5, idle_timeout: 20 });
   const instance = drizzle(client, { schema });
-  if (process.env.NODE_ENV !== "production") {
-    globalForDb._pg = client;
-    globalForDb._db = instance;
-  }
+  // Memoise the client for the life of the (serverless or dev) process. This is
+  // essential in production: without it every `db` access would open a fresh
+  // pool and quickly exhaust the pooler ("max client connections reached").
+  globalForDb._pg = client;
+  globalForDb._db = instance;
   return instance;
 }
 
