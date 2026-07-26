@@ -186,10 +186,61 @@ select:focus {
   color: var(--accent);
 }
 
+.admin-nav a.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .admin-user {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* --- race workspace --- */
+.workspace-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.workspace-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.workspace-title h1 {
+  margin: 0;
+}
+
+.workspace-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.workspace-tabs a {
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.5rem 0;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+}
+
+.workspace-tabs a:hover {
+  color: var(--accent);
+}
+
+.workspace-tabs a.active {
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
 }
 
 /* --- layout helpers --- */

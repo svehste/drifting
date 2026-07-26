@@ -3,8 +3,8 @@ import { nb } from "@/copy/nb";
 import { db } from "@/db/client";
 import { classes } from "@/db/schema";
 import { createClass, deleteClass, renameClass } from "@/server/actions/classes";
-import { ActionForm } from "../_components/action-form";
-import { DeleteForm } from "../_components/delete-form";
+import { ActionForm } from "../../_components/action-form";
+import { DeleteForm } from "../../_components/delete-form";
 
 export const dynamic = "force-dynamic";
 

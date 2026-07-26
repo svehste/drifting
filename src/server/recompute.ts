@@ -4,7 +4,7 @@
  * (run.total/approved, registration.qualifying_score/rank/eligible) never drift.
  */
 import "server-only";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql, type SQL } from "drizzle-orm";
 import { qualifyingRuns, registrations, runScores } from "@/db/schema";
 import { rankDrivers, runTotal, type DriverRuns, type RunInput } from "@/domain";
 import type { Tx } from "./audit";
@@ -38,7 +38,11 @@ export async function recomputeRace(tx: Tx, raceId: string): Promise<void> {
   }
 
   // 1) Each run: complete iff all three criteria are confirmed; total from M1.
+  // Collect the new row state in memory, then flush all runs in ONE statement —
+  // a per-run UPDATE round-trip (×up to 64) over the pooler is what made scoring
+  // feel slow. Same for the ranking updates below.
   const completeInputByReg = new Map<string, RunInput[]>();
+  const runUpdates: { id: string; status: "pending" | "complete"; total: number | null; approved: boolean }[] = [];
   for (const run of runs) {
     const rs = scoresByRun.get(run.id) ?? [];
     const byCrit = new Map(rs.map((s) => [s.criterion, s]));
@@ -62,10 +66,22 @@ export async function recomputeRace(tx: Tx, raceId: string): Promise<void> {
       completeInputByReg.get(run.registrationId)!.push(input);
     }
 
-    await tx
-      .update(qualifyingRuns)
-      .set({ status: complete ? "complete" : "pending", total, approved })
-      .where(eq(qualifyingRuns.id, run.id));
+    runUpdates.push({ id: run.id, status: complete ? "complete" : "pending", total, approved });
+  }
+
+  if (runUpdates.length > 0) {
+    const rows = sql.join(
+      runUpdates.map(
+        (u) => sql`(${u.id}::uuid, ${u.status}::run_status, ${u.total}::int, ${u.approved}::boolean)`,
+      ),
+      sql`, `,
+    );
+    await tx.execute(sql`
+      UPDATE ${qualifyingRuns} AS q
+      SET status = v.status, total = v.total, approved = v.approved
+      FROM (VALUES ${rows}) AS v(id, status, total, approved)
+      WHERE q.id = v.id
+    `);
   }
 
   // 2) Race ranking with the HKS/LKS tie-break (M1 rankDrivers).
@@ -75,14 +91,16 @@ export async function recomputeRace(tx: Tx, raceId: string): Promise<void> {
   }));
   const ranked = rankDrivers(driverRuns);
 
-  for (const d of ranked) {
-    await tx
-      .update(registrations)
-      .set({
-        qualifyingScore: d.eligible ? d.qualifyingScore : null,
-        qualifyingRank: d.rank,
-        eligible: d.eligible,
-      })
-      .where(eq(registrations.id, d.driverId));
+  if (ranked.length > 0) {
+    const rows: SQL[] = ranked.map(
+      (d) =>
+        sql`(${d.driverId}::uuid, ${d.eligible ? d.qualifyingScore : null}::int, ${d.rank}::int, ${d.eligible}::boolean)`,
+    );
+    await tx.execute(sql`
+      UPDATE ${registrations} AS r
+      SET qualifying_score = v.qualifying_score, qualifying_rank = v.qualifying_rank, eligible = v.eligible
+      FROM (VALUES ${sql.join(rows, sql`, `)}) AS v(id, qualifying_score, qualifying_rank, eligible)
+      WHERE r.id = v.id
+    `);
   }
 }

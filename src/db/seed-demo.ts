@@ -120,7 +120,7 @@ async function main() {
   await sql.end();
   console.log(`✓ Demo ready. Race id: ${race.id}`);
   console.log(`  Leaderboard: /lop/${race.id}/resultater`);
-  console.log(`  Admin race:  /admin/lop/${race.id}`);
+  console.log(`  Admin race:  /admin/e/${event.id}/lop/${race.id}`);
 }
 
 main().catch((err) => {

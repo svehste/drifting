@@ -9,6 +9,7 @@ import { qualifyingRuns, raceOfficials, races, registrations, runScores } from "
 import type { Criterion } from "@/domain/types";
 import { writeAudit, type Tx } from "@/server/audit";
 import { requireCapability } from "@/server/authz";
+import { raceEventId } from "@/server/lookups";
 import { recomputeRace } from "@/server/recompute";
 import { fail, guardAction, ok, type ActionResult } from "./_result";
 
@@ -137,7 +138,11 @@ export async function submitScore(_prev: ActionResult, formData: FormData): Prom
       });
     });
 
-    revalidatePath(`/lop/${ctx.raceId}/kvalifisering`);
+    // A confirmed score re-ranks the board, so refresh the whole workspace (scoring
+    // grid + Kvalifisering tab) and the public leaderboard.
+    const eventId = await raceEventId(ctx.raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${ctx.raceId}`, "layout");
+    revalidatePath(`/lop/${ctx.raceId}/resultater`);
     return ok(confirmed ? "Bekreftet" : "Lagret");
   });
 }

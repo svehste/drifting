@@ -48,7 +48,7 @@ export async function createEvent(_prev: ActionResult, formData: FormData): Prom
         details: parsed.data,
       });
     });
-    revalidatePath("/admin/arrangementer");
+    revalidatePath("/admin");
     return ok();
   });
 }
@@ -71,8 +71,8 @@ export async function updateEvent(_prev: ActionResult, formData: FormData): Prom
         details: parsed.data,
       });
     });
-    revalidatePath("/admin/arrangementer");
-    revalidatePath(`/admin/arrangementer/${id}`);
+    revalidatePath("/admin");
+    revalidatePath(`/admin/e/${id}`, "layout");
     return ok();
   });
 }
@@ -94,7 +94,7 @@ export async function deleteEvent(_prev: ActionResult, formData: FormData): Prom
         entityId: id,
       });
     });
-    revalidatePath("/admin/arrangementer");
+    revalidatePath("/admin");
     return ok();
   });
 }
