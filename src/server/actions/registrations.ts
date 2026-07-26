@@ -8,6 +8,7 @@ import { db } from "@/db/client";
 import { qualifyingRuns, registrations, runScores } from "@/db/schema";
 import { writeAudit } from "@/server/audit";
 import { requireCapability } from "@/server/authz";
+import { raceEventId } from "@/server/lookups";
 import { fail, guardAction, ok, type ActionResult } from "./_result";
 
 /**
@@ -43,7 +44,8 @@ export async function registerDriver(
         details: { raceId, userId },
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
     return ok();
   });
 }
@@ -88,7 +90,8 @@ export async function unregisterDriver(
         entityId: registrationId,
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
     return ok();
   });
 }

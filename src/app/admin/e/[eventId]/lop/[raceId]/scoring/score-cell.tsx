@@ -76,6 +76,7 @@ export function ScoreCell({
             defaultValue={value?.flow ?? ""}
             aria-label={nb.criterion.flow}
             placeholder={nb.criterion.flow}
+            title={`${nb.criterion.flow}: 0–${maxA}`}
           />
           <input
             type="number"
@@ -85,6 +86,7 @@ export function ScoreCell({
             defaultValue={value?.effort ?? ""}
             aria-label={nb.criterion.effort}
             placeholder={nb.criterion.effort}
+            title={`${nb.criterion.effort}: 0–${maxB}`}
           />
         </div>
       ) : (
@@ -95,6 +97,7 @@ export function ScoreCell({
           max={maxA}
           defaultValue={value?.points ?? ""}
           aria-label={label}
+          title={`${label}: 0–${maxA}`}
         />
       )}
       <Buttons />

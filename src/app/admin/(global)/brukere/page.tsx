@@ -4,8 +4,8 @@ import { db } from "@/db/client";
 import { userRoles, users } from "@/db/schema";
 import type { Role } from "@/domain/types";
 import { createUser, deleteUser, updateUser } from "@/server/actions/users";
-import { ActionForm } from "../_components/action-form";
-import { DeleteForm } from "../_components/delete-form";
+import { ActionForm } from "../../_components/action-form";
+import { DeleteForm } from "../../_components/delete-form";
 import { UserRoleFields } from "./user-role-fields";
 
 export const dynamic = "force-dynamic";

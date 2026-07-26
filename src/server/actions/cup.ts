@@ -16,6 +16,7 @@ import {
   persistBracket,
   type DecisionResult,
 } from "@/server/cup-engine";
+import { raceEventId } from "@/server/lookups";
 import { fail, guardAction, ok, type ActionResult } from "./_result";
 
 /** Generate the bracket once qualifying is locked (Cup AC 1). Admin or secretary. */
@@ -53,7 +54,8 @@ export async function generateBracket(
       });
     });
 
-    revalidatePath(`/admin/lop/${raceId}/cup`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}/finaler`);
     revalidatePath(`/lop/${raceId}/cup`);
     return ok();
   });
@@ -93,7 +95,8 @@ export async function regenerateBracket(
       });
     });
 
-    revalidatePath(`/admin/lop/${raceId}/cup`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}/finaler`);
     revalidatePath(`/lop/${raceId}/cup`);
     return ok();
   });
@@ -124,7 +127,8 @@ export async function decideBattle(_prev: ActionResult, formData: FormData): Pro
 
     if (!result || !result.ok) return fail(result?.error ?? nb.errors.generic);
 
-    revalidatePath(`/admin/lop/${result.raceId}/cup`);
+    const eventId = await raceEventId(result.raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${result.raceId}/finaler`);
     revalidatePath(`/lop/${result.raceId}/cup`);
     return ok();
   });

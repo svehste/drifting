@@ -8,6 +8,7 @@ import { db } from "@/db/client";
 import { races } from "@/db/schema";
 import { writeAudit } from "@/server/audit";
 import { requireCapability } from "@/server/authz";
+import { raceEventId } from "@/server/lookups";
 import { fail, guardAction, ok, type ActionResult } from "./_result";
 
 /** Lock qualifying (admin or secretary) — scores become read-only; bracket can be generated. */
@@ -33,8 +34,11 @@ export async function lockQualifying(_prev: ActionResult, formData: FormData): P
         entityId: raceId,
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
-    revalidatePath(`/lop/${raceId}/kvalifisering`);
+    const eventId = await raceEventId(raceId);
+    // Locking touches every workspace tab (scoring goes read-only, the board
+    // finalises, the bracket becomes generatable), so revalidate the subtree.
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
+    revalidatePath(`/lop/${raceId}/resultater`);
     return ok();
   });
 }
@@ -60,8 +64,9 @@ export async function unlockQualifying(
         entityId: raceId,
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
-    revalidatePath(`/lop/${raceId}/kvalifisering`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
+    revalidatePath(`/lop/${raceId}/resultater`);
     return ok();
   });
 }
@@ -84,7 +89,8 @@ export async function publishLeaderboard(
         entityId: raceId,
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}/kvalifisering`);
     revalidatePath(`/lop/${raceId}/resultater`);
     return ok();
   });

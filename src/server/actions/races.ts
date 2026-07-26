@@ -9,6 +9,7 @@ import { raceOfficials, races, userRoles } from "@/db/schema";
 import { writeAudit } from "@/server/audit";
 import { requireCapability } from "@/server/authz";
 import { raceHasResults } from "@/server/guards";
+import { raceEventId } from "@/server/lookups";
 import { fail, guardAction, ok, type ActionResult } from "./_result";
 
 const raceSchema = z.object({
@@ -53,7 +54,7 @@ export async function createRace(_prev: ActionResult, formData: FormData): Promi
         details: parsed.data,
       });
     });
-    revalidatePath(`/admin/arrangementer/${parsed.data.eventId}`);
+    revalidatePath(`/admin/e/${parsed.data.eventId}`);
     return ok(newId);
   });
 }
@@ -75,8 +76,8 @@ export async function updateRace(_prev: ActionResult, formData: FormData): Promi
         details: parsed.data,
       });
     });
-    revalidatePath(`/admin/arrangementer/${parsed.data.eventId}`);
-    revalidatePath(`/admin/lop/${id}`);
+    revalidatePath(`/admin/e/${parsed.data.eventId}`);
+    revalidatePath(`/admin/e/${parsed.data.eventId}/lop/${id}`, "layout");
     return ok();
   });
 }
@@ -99,7 +100,7 @@ export async function deleteRace(_prev: ActionResult, formData: FormData): Promi
         entityId: id,
       });
     });
-    revalidatePath(`/admin/arrangementer/${eventId}`);
+    revalidatePath(`/admin/e/${eventId}`);
     return ok();
   });
 }
@@ -144,7 +145,8 @@ export async function setCriterionJudge(
         details: { duty, userId },
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
     return ok();
   });
 }
@@ -170,7 +172,8 @@ export async function addBattleJudge(
         details: { userId },
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
     return ok();
   });
 }
@@ -193,7 +196,8 @@ export async function removeOfficial(
         entityId: id,
       });
     });
-    revalidatePath(`/admin/lop/${raceId}`);
+    const eventId = await raceEventId(raceId);
+    if (eventId) revalidatePath(`/admin/e/${eventId}/lop/${raceId}`, "layout");
     return ok();
   });
 }
